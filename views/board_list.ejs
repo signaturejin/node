@@ -9,13 +9,16 @@
 <body>
     <div class="postlist">
         <div class="line">
+            <div>게시글번호</div>
             <div>게시글제목</div>
             <div>게시글내용</div>
         </div>
         <% postitem.forEach(function(item,index){ %>
             <div class="line">
-                <div><%- item.title %></div>
-                <div><%- item.context %></div>
+                <!-- db 프로퍼티 항목을 잘 봐야함 -->
+                <div><%- item.brdid %></div>
+                <div><%- item.brdtitle %></div>
+                <div><%- item.brdcontext %></div>
             </div>
         <% }); %>
     </div>

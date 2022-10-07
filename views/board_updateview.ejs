@@ -8,6 +8,13 @@
 </head>
 <body>
     <form action="/postupdateresult" method="post">
+        <select name="updatenumber">
+            <!-- <option value="1">게시글1</option> -->
+            <!-- 폼태그에서 입력한 데이터값은 전부 데이터타입(자료형)이 문자열(string) -->
+            <% postitem.forEach(function(item,index){ %>
+                <option value="<%- item.brdid %>">게시글 <%- item.brdid %></option>
+            <% }); %>
+        </select>
         <label>수정할 게시글제목</label>
         <input type="text" name="updatetitle">
         <label>수정할 게시글내용</label>

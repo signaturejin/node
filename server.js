@@ -57,17 +57,24 @@ app.get("/postlist",function(req,res){
 });
 
 app.get("/postupdateview",function(req,res){
-    res.render("board_updateview");
+    //데이터베이스 ex4_insert 콜렉션에서 게시글 번호들 가지고 와서
+    //board_updateview.ejs파일에 데이터 전달! -> <select><option></option></select>생성
+    db.collection("ex4_insert").find().toArray(function(err,result){
+        res.render("board_updateview",{postitem: result});
+    });
 });
 
 //데이터 수정작업 명령어 update()
 app.post("/postupdateresult",function(req,res){
     db.collection("ex4_insert").update({
         //수정할 항목
-        context: "쓰자22"
+        brdid: Number(req.body.updatenumber)
     },{
         //변경할 값
-        $set: {context: "쓰고봤더니"}
+        $set: {
+            brdtitle: req.body.updatetitle,
+            brdcontext: req.body.updatetxt
+        }
     },function(err,result){
         res.send("데이터 수정완료");
     });
