@@ -45,15 +45,18 @@ app.post("/postadd",function(req,res){
     db.collection("ex4_count").findOne({name:"게시물갯수"},function(err,result){
         //컬렉션 ex4_insert에 아래 객체를 넣어준다.
         db.collection("ex4_insert").insertOne({
-            //ex4_insert 프로퍼티 brdid에 컬렉션 ex4_count의 프로퍼티 totalCount + 1(숫자 증가시키기 위함)을 넣어줌
+            //ex4_insert 프로퍼티 brdid에 컬렉션 ex4_count의 프로퍼티 totalCount + 1을 넣어줌(1부터 시작하기 위함)
             //result는 45번줄 참고
             brdid: result.totalCount + 1,
             //컬렉션 프로퍼티 brdtitle/brdcontext에 board_insert.ejs의 인풋태그에서 적은 값을 넣어줌
             brdtitle: req.body.brdtitle,
             brdcontext: req.body.brdtxt
         },function(err,result){
+            //위 기능을 수행했다면 컬렉션 ex4_count에서 수정(update)시켜줌 -> 프로퍼티name의 값이 '게시물갯수'일 경우
+            //$inc는 숫자하나씩 증가시켜줌 이를 이용하여 totalCount를 1씩 증가시켜줌  
             db.collection("ex4_count").updateOne({name:"게시물갯수"},{$inc:{totalCount:1}},function(err,result){
                 // res.redirect("/postinsert");
+                // 위 모든 기능 완료 시 아래 send메세지로 보여줌
                 res.send("데이터삽입 및 토탈카운트 수정완료");
             });
         });
