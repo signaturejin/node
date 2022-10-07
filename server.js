@@ -35,15 +35,19 @@ app.get("/postinsert",function(req,res){
 });
 
 app.post("/postadd",function(req,res){
-    db.collection("ex4_insert").insertOne({
-        title: req.body.brdtitle,
-        context: req.body.brdtxt
-    },function(err,result){
-        //데이터베이스 작업끝나고 실행할 기능
-        res.redirect("/");
-        //원하는 경로로 요청해서 페이지 이동!
-        //redirect("/") <-- 메인  redirect("/postinsert") <-- 글쓰기 페이지
-    });
+    db.collection("ex4_count").findOne({name:"게시물갯수"},function(err,result){
+        db.collection("ex4_insert").insertOne({
+            brdid: result.totalCount + 1,
+            brdtitle: req.body.brdtitle,
+            brdcontext: req.body.brdtxt
+        },function(err,result){
+            db.collection("ex4_count").updateOne({name:"게시물갯수"},{$inc:{totalCount:1}},function(err,result){
+                // res.redirect("/postinsert");
+                res.send("데이터삽입 및 토탈카운트 수정완료");
+            });
+        });
+    })//ex4_insert 콜렉션에는 totalCount값에 들어간 숫자값을 게시글 번호로 부여함
+     //ex4_count 콜렉션을 찾아서 그 안에 totalCount 값을 1증가
 });
 
 app.get("/postlist",function(req,res){
