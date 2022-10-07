@@ -26,18 +26,29 @@ MongoClient.connect("mongodb+srv://admin:qwer1234@testdb.qmmqvc3.mongodb.net/?re
     });
 });
 
+//메인페이지로 가는 기능
 app.get("/",function(req,res){
+    //메인페이지로 이동하면 화면에 send메세지 보여줌
     res.send("메인페이지 접속완료");
 });
 
+// /postinsert페이지로 이동
 app.get("/postinsert",function(req,res){
+    // ejs파일인 board_insert.ejs를 보여줌
     res.render("board_insert");
 });
 
+// /postadd는 input이 있는 ejs파일의 form action 즉 input값을 보내주는 경로
 app.post("/postadd",function(req,res){
+    //디비에 있는 컬렉션 ex4_count에서 find()함수를 이용해서 찾음
+    //프로퍼티name의 값이 '게시물갯수'인 것을 찾아서 다음 함수를 실행함
     db.collection("ex4_count").findOne({name:"게시물갯수"},function(err,result){
+        //컬렉션 ex4_insert에 아래 객체를 넣어준다.
         db.collection("ex4_insert").insertOne({
+            //ex4_insert 프로퍼티 brdid에 컬렉션 ex4_count의 프로퍼티 totalCount + 1(숫자 증가시키기 위함)을 넣어줌
+            //result는 45번줄 참고
             brdid: result.totalCount + 1,
+            //컬렉션 프로퍼티 brdtitle/brdcontext에 board_insert.ejs의 인풋태그에서 적은 값을 넣어줌
             brdtitle: req.body.brdtitle,
             brdcontext: req.body.brdtxt
         },function(err,result){
@@ -50,9 +61,19 @@ app.post("/postadd",function(req,res){
      //ex4_count 콜렉션을 찾아서 그 안에 totalCount 값을 1증가
 });
 
+// /postlist주소로 접속을 하면
 app.get("/postlist",function(req,res){
+    //콜렉션 ex4_insert에 들어있는 것을 전부 찾는다. -> 배열형태로(반복문을 사용할 수 있도록)
     db.collection("ex4_insert").find().toArray(function(err,result){
+        // board_list.ejs파일에 위에서 찾은 결과를 프로퍼티 postitem을 생성하여 그 프로퍼티에 넣어준다
         res.render("board_list",{postitem: result});
+
+
+        // res.sendFile(__dirname + "/test.html");
+        // 내가 지정한 파일을 응답해서 사용자한테 보여준다.
+
+        // res.redirect("/")
+        // 사용자한테 이 주소로 강제이동
     });
 });
 
